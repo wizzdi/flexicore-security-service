@@ -7,6 +7,7 @@ import com.flexicore.security.SecurityContextBase;
 import com.wizzdi.flexicore.boot.base.interfaces.Plugin;
 import com.wizzdi.flexicore.security.request.RoleCreate;
 import com.wizzdi.flexicore.security.request.RoleFilter;
+import com.wizzdi.flexicore.security.request.RoleCopyFilter;
 import com.wizzdi.flexicore.security.request.RoleUpdate;
 import com.wizzdi.flexicore.security.response.PaginationResponse;
 import com.wizzdi.flexicore.security.service.RoleService;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @OperationsInside
@@ -47,5 +49,11 @@ public class RoleController implements Plugin {
     public Role update(@RequestBody @Validated(Update.class) RoleUpdate roleUpdate, @RequestAttribute SecurityContextBase securityContext) {
 
         return roleService.updateRole(roleUpdate, securityContext);
+    }
+
+    @IOperation(Name = "copy Roles", Description = "copy Roles")
+    @PostMapping("/copyRoles")
+    public List<Role> copyRoles(@RequestBody @Valid RoleCopyFilter roleCopyFilter, @RequestAttribute SecurityContextBase securityContext) {
+        return roleService.copyRoles(roleCopyFilter, securityContext);
     }
 }

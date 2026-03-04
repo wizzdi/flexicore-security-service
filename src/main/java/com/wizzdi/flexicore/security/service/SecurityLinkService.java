@@ -52,16 +52,18 @@ public class SecurityLinkService implements Plugin {
 		return securityLink;
 	}
 
-	public boolean updateSecurityLinkNoMerge(SecurityLinkCreate securityLinkCreate, SecurityLink securityLink) {
-		boolean updated = baselinkService.updateBaselinkNoMerge(securityLinkCreate, securityLink);
-		if(securityLinkCreate.getSimpleValue()!=null&&!securityLinkCreate.getSimpleValue().equals(securityLink.getSimplevalue())){
-			securityLink.setSimplevalue(securityLinkCreate.getSimpleValue());
+	public boolean updateSecurityLinkNoMerge(SecurityLinkCreate req, SecurityLink securityLink) {
+		boolean updated = baselinkService.updateBaselinkNoMerge(req, securityLink);
+		if(req.getSimpleValue()!=null&&!req.getSimpleValue().equals(securityLink.getSimplevalue())){
+			securityLink.setSimplevalue(req.getSimpleValue());
 			updated=true;
 		}
-		if(securityLinkCreate.getValue()!=null&&(securityLink.getValue()==null||!securityLinkCreate.getValue().getId().equals(securityLink.getValue().getId()))){
-			securityLink.setValue(securityLinkCreate.getValue());
+		if(req.getValue()!=null&&(securityLink.getValue()==null||!req.getValue().getId().equals(securityLink.getValue().getId()))){
+			securityLink.setValue(req.getValue());
 			updated=true;
 		}
+
+
 		return updated;
 	}
 

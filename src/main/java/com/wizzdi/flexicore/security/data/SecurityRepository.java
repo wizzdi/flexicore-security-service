@@ -55,8 +55,8 @@ public class SecurityRepository implements Plugin {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<SecurityUser> q = cb.createQuery(SecurityUser.class);
 		Root<SecurityUser> users = q.from(SecurityUser.class);
-		// check if this securityUser has direct connection with the securityOperation and the
-		// value is Deny.
+		// check if this securityUser has direct connection with the securityOperation and the value equals to the access argument.
+
 		Join<SecurityUser, UserToBaseClass> direct = users.join(SecurityUser_.userToBaseClasses, JoinType.LEFT);
 		Predicate directPredicate = cb.and(
 				cb.isFalse(direct.get(UserToBaseClass_.softDelete)),
@@ -67,6 +67,23 @@ public class SecurityRepository implements Plugin {
 		List<Predicate> preds = new ArrayList<>();
 		preds.add(directPredicate);
 		q.select(users).where(preds.toArray(Predicate[]::new));
+		TypedQuery<SecurityUser> query = em.createQuery(q);
+		List<SecurityUser> usersList = query.getResultList();
+		return !usersList.isEmpty();
+	}
+
+	public boolean isSuperAdmin(SecurityUser securityUser) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<SecurityUser> q = cb.createQuery(SecurityUser.class);
+		Root<SecurityUser> users = q.from(SecurityUser.class);
+		Join<SecurityUser, RoleToUser> roleToUser = users.join(SecurityUser_.roles);
+		Join<RoleToUser, Role> roles = cb.treat(roleToUser.join(RoleToUser_.leftside), Role.class);
+		Predicate rolesPredicate = cb.and(
+				cb.isFalse(roleToUser.get(RoleToUser_.softDelete)),
+				cb.equal(users.get(SecurityUser_.id), securityUser.getId()),
+				cb.equal(roles.get(Role_.id), "HzFnw-nVR0Olq6WBvwKcQg")
+		);
+		q.select(users).where(rolesPredicate);
 		TypedQuery<SecurityUser> query = em.createQuery(q);
 		List<SecurityUser> usersList = query.getResultList();
 		return !usersList.isEmpty();

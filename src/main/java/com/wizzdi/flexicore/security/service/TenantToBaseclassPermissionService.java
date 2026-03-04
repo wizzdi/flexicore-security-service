@@ -1,6 +1,7 @@
 package com.wizzdi.flexicore.security.service;
 
 import com.flexicore.model.Baseclass;
+import com.flexicore.model.SecurityTenant;
 import com.flexicore.model.TenantToBaseClassPremission;
 import com.wizzdi.flexicore.boot.base.interfaces.Plugin;
 import com.wizzdi.flexicore.security.data.TenantToBaseclassPermissionRepository;
@@ -24,9 +25,13 @@ public class TenantToBaseclassPermissionService implements Plugin {
 	private SecurityLinkService securityLinkService;
 	@Autowired
 	private TenantToBaseclassPermissionRepository tenantToBaseclassPermissionRepository;
-
+	@Autowired
+	private OperationValidatorService operationValidatorService;
 
 	public TenantToBaseClassPremission createTenantToBaseclassPermission(TenantToBaseclassPermissionCreate tenantToBaseclassPermissionCreate, SecurityContextBase securityContext){
+		if (tenantToBaseclassPermissionCreate.getTenant()!=null){
+			operationValidatorService.clearCacheByTenant(tenantToBaseclassPermissionCreate.getTenant());
+		}
 		TenantToBaseClassPremission tenantToBaseclassPermission= createTenantToBaseclassPermissionNoMerge(tenantToBaseclassPermissionCreate,securityContext);
 		tenantToBaseclassPermissionRepository.merge(tenantToBaseclassPermission);
 		return tenantToBaseclassPermission;
