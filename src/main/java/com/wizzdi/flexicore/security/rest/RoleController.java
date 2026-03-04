@@ -1,6 +1,7 @@
 package com.wizzdi.flexicore.security.rest;
 
 import com.flexicore.annotations.IOperation;
+import com.flexicore.annotations.IOperation.Access;
 import com.flexicore.annotations.OperationsInside;
 import com.flexicore.model.Role;
 import com.flexicore.security.SecurityContextBase;
@@ -51,9 +52,6 @@ public class RoleController implements Plugin {
         return roleService.updateRole(roleUpdate, securityContext);
     }
 
-    @IOperation(Name = "copy Roles", Description = "copy Roles")
-    @PostMapping("/copyRoles")
-    public List<Role> copyRoles(@RequestBody @Valid RoleCopyFilter roleCopyFilter, @RequestAttribute SecurityContextBase securityContext) {
-        return roleService.copyRoles(roleCopyFilter, securityContext);
-    }
 }
+
+
